@@ -1,20 +1,20 @@
 import csv
 import sys
 
-def main():
 
-    num = 7
-    if len(sys.argv) == 2:
-        num = int(sys.argv[1])
-
+def get_all_words():
     with open('/usr/share/dict/words') as f:
         words = set([w.strip().lower() for w in f])
-    words = sorted(words)
+    return sorted(words)
 
+
+def get_periodic_symbols():
     with open('ptdata.csv') as f:
         reader = csv.reader(f)
-        symbols = [row[1].strip().lower() for row in reader]
+        return [row[1].strip().lower() for row in reader]
 
+
+def get_word_clues_dict():
     with open('clues.txt', 'rU') as f:
         reader = csv.reader(f, delimiter='\t')
         ny_clues = {}
@@ -24,6 +24,20 @@ def main():
             if word in ny_clues and len(clue) < len(ny_clues[word]):
                 continue
             ny_clues[word] = row[0]
+    return ny_clues
+
+
+def main():
+    if len(sys.argv) == 2:
+        num = int(sys.argv[1])
+    else:
+        print >> sys.stderr, 'Please enter number of subsitutions desired'
+        sys.exit(1)
+    assert num > 0
+
+    words = get_all_words()
+    symbols = get_periodic_symbols()
+    ny_clues = get_word_clues_dict()
 
     for word in words:
         word_copy = word
