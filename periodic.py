@@ -3,8 +3,13 @@ import sys
 
 
 def get_all_words():
-    with open('/usr/share/dict/words') as f:
-        words = set([w.strip().lower() for w in f])
+    words = set()
+    with open('clues.txt', 'rU') as f:
+        reader = csv.reader(f, delimiter='\t')
+        ny_clues = {}
+        for row in reader:
+            word = row[1].strip().lower()
+            words.add(word)
     return sorted(words)
 
 
@@ -21,9 +26,9 @@ def get_word_clues_dict():
         for row in reader:
             word = row[1].strip().lower()
             clue = row[0].strip()
-            if word in ny_clues and len(clue) < len(ny_clues[word]):
-                continue
-            ny_clues[word] = row[0]
+            if word not in ny_clues:
+                ny_clues[word] = []
+            ny_clues[word].append(clue)
     return ny_clues
 
 
